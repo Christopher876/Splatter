@@ -19,7 +19,23 @@ const cardStyle = {
   position: "absolute" as "absolute",
 };
 
-export default function BasicTextFields() {
+interface Props{
+    loginState : boolean
+    setLoginState : any
+    setTokenState : any
+}
+
+export default function Login({ loginState, setLoginState, setTokenState } : Props) {
+  const [Username, setUsername] = React.useState('');
+  const [Password, setPassword] = React.useState('');
+
+  const login = async (username : string, password : string) => {
+    //TODO login in using the backend
+    console.log(username);
+    console.log(password);
+    setLoginState(true);
+  }
+
   return (
     <div style={cardStyle}>
       <Card elevation={3}>
@@ -38,11 +54,11 @@ export default function BasicTextFields() {
           autoComplete="off"
         >
           <ul style={{ listStyleType: "none" }}>
-            <li style={{marginTop: '5%'}}>
-              <TextField id="standard-basic" label="Username"/>
+            <li style={{marginTop: '2%', marginBottom:'5%'}}>
+              <TextField id="username" label="Username" value={Username} onChange={(e) => setUsername(e.target.value)}/>
             </li>
             <li>
-              <TextField id="standard-basic" label="Password" type="password" />
+              <TextField id="password" label="Password" type="password" value={Password} onChange={(e) => setPassword(e.target.value)} />
             </li>
           </ul>
         </form>
@@ -56,49 +72,9 @@ export default function BasicTextFields() {
           <Link to="/createAccount" style={{ textDecoration: "none" }}>
             <Button size="medium">Create Account</Button>
           </Link>
-          <Button size="medium">Login</Button>
+          <Button size="medium" onClick={() => login(Username, Password)}>Login</Button>
         </CardActions>
       </Card>
     </div>
   );
 }
-//   title: {
-//     fontSize: 36,
-//     textAlign: 'center'
-//   },
-//   pos: {
-//     marginBottom: 12,
-//   },
-// });
-
-// const Login = () => {
-//   const classes = useStyles;
-
-//   return (
-//     <Card className={classes.root} elevation={3}>
-//       <CardContent>
-//         <Typography
-//           className={classes.title}
-//           color="textSecondary"
-//           gutterBottom
-//         >
-//           Login
-//         </Typography>
-//         <div>
-//         <form style={{ display:'flex', justifyContent:'center' }} noValidate autoComplete="off">
-//             <ul style={{listStyleType: 'none'}}>
-//             <li><TextField id="standard-basic" label="Username"/></li>
-//             <li><TextField id="standard-basic" label="Password" type='password'/></li>
-//             </ul>
-//         </form>
-//         </div>
-//       </CardContent>
-//       <CardActions style={{ display:'flex', justifyContent:'center', marginLeft:'4.5%' }}>
-//         <Link to='/createAccount' style={{ textDecoration: 'none' }}><Button size="medium">Create Account</Button></Link>
-//         <Button size="medium">Login</Button>
-//       </CardActions>
-//     </Card>
-//   );
-// };
-
-// export default Login;

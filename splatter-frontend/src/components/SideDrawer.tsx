@@ -17,19 +17,16 @@ interface Props {
 
 export default function SideDrawer({ showDrawer, setDrawerState } : Props) {
 
-  const toggleDrawer = (anchor : any, open : any) => (event : any) => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-      return;
-    }
+  const toggleDrawer = () => (event : any) => {
     setDrawerState(false);
   };
 
-  const list = (anchor : any) => (
+  const list = () => (
     <Box
-      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
+      sx={{ width: 250 }}
       role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
+      onClick={toggleDrawer()}
+      onKeyDown={toggleDrawer()}
     >
       <List>
         {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
@@ -61,9 +58,9 @@ export default function SideDrawer({ showDrawer, setDrawerState } : Props) {
           <Drawer
             anchor={"left"}
             open={showDrawer}            
-            onClose={toggleDrawer('left', false)}
+            onClose={toggleDrawer()}
           >
-            {list('left')}
+            {list()}
           </Drawer>
         </React.Fragment>
     </div>
