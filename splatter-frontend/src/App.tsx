@@ -8,7 +8,7 @@ import CreateAccount from './components/CreateAccount';
 import SideDrawer from './components/SideDrawer';
 import { useState } from 'react';
 import Home from './components/Home';
-import { ProjectsPage } from './components/ProjectsPage';
+import Dashboard from './components/Dashboard';
 import Token from './api/Token';
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
     <Router>
       <NavBar isLoggedIn={loginState}/>
       <Switch>
-        <Route path='ProjectsPage' component={ProjectsPage}/>
+        <Route path='/Dashboard' component={Dashboard}/>
         <Route path="/login" component={() => <Login loginState={loginState} setLoginState={setLoginState} setTokenState={setUserToken}/>}/>
         <Route path="/createAccount" component={CreateAccount} />
         <Route path='/' component={Home} />

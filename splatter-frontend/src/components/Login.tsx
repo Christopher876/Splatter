@@ -6,7 +6,8 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import Token from "../api/Token";
 
 const cardStyle = {
   minWidth: 275,
@@ -28,12 +29,47 @@ interface Props{
 export default function Login({ loginState, setLoginState, setTokenState } : Props) {
   const [Username, setUsername] = React.useState('');
   const [Password, setPassword] = React.useState('');
+  const [validLogin, setValidLogin] = React.useState(true); // Set to true so that the message does not appear on the first login attempt
 
-  const login = async (username : string, password : string) => {
-    //TODO login in using the backend
-    console.log(username);
-    console.log(password);
-    setLoginState(true);
+  const history = useHistory();
+
+  const login = async () => {
+    const res = await fetch(`http://localhost:8080/api/user/login?username=${Username}&password=${Password}`, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    })
+    .then(response => {
+      //* Successful login - Handle keeping the user logged in and store the refresh token, etc.
+      response.text().then(
+        data => {
+          var o = JSON.parse(data);
+          // Check if the error property exists. If it does, invalid login
+          if('error' in o){
+            // Send a message about invalid login
+            setValidLogin(false);
+            return;
+          }
+          // Send states to make the account icon appear
+          else{
+            let token = new Token(o);
+            setValidLogin(true);
+            setTokenState(token);
+            setLoginState(true);
+
+            // Reroute to the dashboard if we were successful
+            history.push('/Dashboard');
+          }
+        }
+      );
+    })
+    .catch((error) => {
+      console.log(data);
+    });
+
+    const data = await res;
   }
 
   return (
@@ -55,10 +91,18 @@ export default function Login({ loginState, setLoginState, setTokenState } : Pro
         >
           <ul style={{ listStyleType: "none" }}>
             <li style={{marginTop: '2%', marginBottom:'5%'}}>
-              <TextField id="username" label="Username" value={Username} onChange={(e) => setUsername(e.target.value)}/>
+              <TextField id="username" label="Username" value={Username} onChange={
+                (e) =>{ 
+                  setUsername(e.target.value);
+                }
+              }
+              />
             </li>
             <li>
               <TextField id="password" label="Password" type="password" value={Password} onChange={(e) => setPassword(e.target.value)} />
+            </li>
+            <li>
+              {validLogin ? '' : <p style={{textAlign:'center',color:'red'}}>Invalid Login</p>}
             </li>
           </ul>
         </form>
@@ -72,7 +116,7 @@ export default function Login({ loginState, setLoginState, setTokenState } : Pro
           <Link to="/createAccount" style={{ textDecoration: "none" }}>
             <Button size="medium">Create Account</Button>
           </Link>
-          <Button size="medium" onClick={() => login(Username, Password)}>Login</Button>
+          <Button size="medium" onClick={login}>Login</Button>
         </CardActions>
       </Card>
     </div>

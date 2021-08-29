@@ -31,6 +31,7 @@ export default function CreateAccount({  } : Props) {
   const [Email, setEmail] = React.useState('');
   const [Password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [usernameTaken, setUsernameTaken] = React.useState(false);
 
   var user : User; // This is initialized when the createAccount function is called and populates it for the post request
 
@@ -58,6 +59,27 @@ export default function CreateAccount({  } : Props) {
     const data = await res; // get the data from the post request
   }
 
+  const checkUsername = async (username : string) => {
+    const res = await fetch(`http://localhost:8080/api/user/exist?username=${username}`, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    })
+    .then(response => {
+      response.text().then(e => {
+        var taken = (e === 'true');
+        setUsernameTaken(taken);
+      });
+    })
+    .catch((error) => {
+      console.log(data);
+    });
+
+    const data = await res;
+  }
+
   return (
     <div style={cardStyle}>
       <Card elevation={3}>
@@ -77,7 +99,13 @@ export default function CreateAccount({  } : Props) {
         >
           <ul style={{ listStyleType: "none" }}>
             <li style={{marginTop: '2%', marginBottom:'5%'}}>
-              <TextField id="username" label="Username" value={Username} onChange={(e) => setUsername(e.target.value)}/>
+              <TextField error={usernameTaken} helperText={usernameTaken ? `${Username} has already been taken` : ''} id="username" label="Username" value={Username} onChange={
+                (e) => {
+                  setUsername(e.target.value);
+                  checkUsername(e.target.value);
+                }
+                }
+                />
             </li>
             <li style={{marginTop: '2%', marginBottom:'5%'}}>
               <TextField id="email" label="Email" value={Email} onChange={(e) => setEmail(e.target.value)}/>

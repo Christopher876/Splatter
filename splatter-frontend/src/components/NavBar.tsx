@@ -18,6 +18,7 @@ import MoreIcon from "@material-ui/icons/MoreVert";
 import SideDrawer from "./SideDrawer";
 import { Link } from "react-router-dom";
 import { Button } from "@material-ui/core";
+import AccountNavMenu from "./AccountNavMenu";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -67,7 +68,7 @@ export default function NavBar({ isLoggedIn }: Props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
-  const isMenuOpen = Boolean(anchorEl);
+  var isMenuOpen = false;
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const [showDrawer, setShowDrawer] = React.useState(false);
@@ -100,28 +101,6 @@ export default function NavBar({ isLoggedIn }: Props) {
   const toggleDrawer = () => {
     setShowDrawer(!showDrawer);
   };
-
-  const menuId = "primary-search-account-menu";
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
 
   const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
@@ -215,7 +194,7 @@ export default function NavBar({ isLoggedIn }: Props) {
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
               {isLoggedIn ? (
-                <AccountCircle />
+                <AccountNavMenu/>
               ) : (
                 <Link to="/login" style={{ textDecoration: "none" }}>
                   <Button size="medium" style={{color:'#FFF'}}>Login</Button>
@@ -237,7 +216,6 @@ export default function NavBar({ isLoggedIn }: Props) {
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
-      {renderMenu}
     </Box>
   );
 }
