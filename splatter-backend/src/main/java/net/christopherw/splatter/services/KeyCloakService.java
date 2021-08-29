@@ -7,6 +7,7 @@ import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.RoleResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.ClientRepresentation;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class KeyCloakService implements IKeyCloakService {
@@ -41,10 +43,10 @@ public class KeyCloakService implements IKeyCloakService {
 
         UserRepresentation newUser = new UserRepresentation();
         newUser.setEnabled(true);
-        newUser.setUsername(user.getUsername());
+        newUser.setUsername(user.getUsername().toLowerCase());
         newUser.setFirstName(user.getFirstname());
         newUser.setLastName(user.getLastname());
-        newUser.setEmail(user.getEmail());
+        newUser.setEmail(user.getEmail().toLowerCase());
 
         RealmResource realmResource = keycloak.realm(realm);
         UsersResource usersResource = realmResource.users();
@@ -82,6 +84,26 @@ public class KeyCloakService implements IKeyCloakService {
 
     @Override
     public boolean SetRealm() {
+        return false;
+    }
+
+    public boolean CheckIfUserExists(String username){
+        Keycloak keycloak = KeycloakBuilder.builder()
+                .serverUrl(serverUrl)
+                .realm(realm)
+                .grantType(OAuth2Constants.PASSWORD)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .username("admin")
+                .password("12")
+                .build();
+        var users = keycloak.realm(realm).users().search(username);
+        var lowerUsername = username.toLowerCase();
+        for (var user : users) {
+            if (user.getUsername().equals(lowerUsername))
+                return true;
+        }
+        keycloak.close();
         return false;
     }
 }

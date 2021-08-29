@@ -21,18 +21,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
     @Autowired private KeyCloakService keyCloakService;
-    final String keyCloakAuthUrl = "http://192.168.12.178:8180/auth/realms/SpringBootKeyCloak/protocol/openid-connect/token";
-
-    // Send public key to the server for storage
-    @RolesAllowed("user")
-    @GetMapping("/send-public-key")
-    public void UpdatePublicKey(){
-
-    }
+    final String keyCloakAuthUrl = "http://192.168.12.227:9080/auth/realms/Splatter/protocol/openid-connect/token";
 
     //Ability to check whether user exists
-    public void ExistUser() {
-
+    @GetMapping("/exist")
+    public Boolean ExistUser(@RequestParam String username) {
+        return keyCloakService.CheckIfUserExists(username);
     }
 
     //Ability to make a user
@@ -90,10 +84,4 @@ public class UserController {
         response.close();
         return value;
     }
-
-    //Ability to edit different fields about a user
-
-    //Get other user's public key
-    //This is stored within their account when they create an account and log in and it is generated for them
-
 }
