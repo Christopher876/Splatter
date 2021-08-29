@@ -34,6 +34,18 @@ services:
     ports:
       - "9080:8080"
   
+  caddy:
+    image: caddy
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - $PWD/Caddyfile:/etc/caddy/Caddyfile
+      - $PWD/site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+  
   watchtower:
     image: containrrr/watchtower
     volumes:
@@ -44,3 +56,7 @@ services:
 volumes:
   postgresql_data:
     driver: local
+  caddy_data:
+    external: true
+  caddy_config:
+    external: true
